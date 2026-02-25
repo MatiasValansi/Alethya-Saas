@@ -1,0 +1,24 @@
+# --- Python / Backend ---
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+backend/.env
+
+# --- Node / Frontend ---
+node_modules/
+dist/
+build/
+.eslintcache
+frontend/.env
+
+# --- OS / IDE ---
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# --- Docker ---
+.docker/
