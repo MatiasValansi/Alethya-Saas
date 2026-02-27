@@ -8,6 +8,7 @@ class Client:
     email: str
     phone: str
     address: str
+    tenant_id: UUID
     id: UUID = field(default_factory=uuid4)
     
     def email_is_valid(self) -> bool:

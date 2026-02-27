@@ -9,6 +9,7 @@ class Product:
     price: float
     stock: int
     code: str  # El código alfanumérico del sistema original
+    tenant_id: UUID
     id: UUID = field(default_factory=uuid4)
 
     # Lógica de Negocio (Migrada del sistema Java)
