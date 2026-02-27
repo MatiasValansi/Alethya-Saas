@@ -1,26 +1,16 @@
-import pytest
-from app.domain.entities.product import Product
+from app.domain.entities.order import Order
 from uuid import uuid4
 
-# Este test fallará porque Order e Item todavía no existen
 def test_order_total_calculation_with_clothing():
-    # Arrange (Preparar)
-    tenant_id = uuid4()
-    remera = Product(
-        name="Remera Oversize",
-        description="Algodón 100%",
-        price=15000.0,
-        stock=50,
-        code="REM-001",
-        tenant_id=tenant_id
-    )
+    # Arrange
+    t_id = uuid4()
+    c_id = uuid4()
+    order = Order(client_id=c_id, tenant_id=t_id)
     
-    # Act (Actuar) - Aquí es donde fallará porque no tenemos Order
-    # Imaginamos cómo queremos que sea la interfaz:
-    # order = Order(client_id=uuid4(), tenant_id=tenant_id)
-    # order.add_item(product=remera, quantity=3)
+    # Act: Añadimos 2 remeras de $15.000 y 1 pantalón de $30.000
+    order.add_item(product_id=uuid4(), quantity=2, price=15000.0)
+    order.add_item(product_id=uuid4(), quantity=1, price=30000.0)
     
-    # Assert (Afirmar)
-    # assert order.total == 45000.0
-    # assert remera.stock == 47
-    pass
+    # Assert
+    assert order.total == 60000.0
+    assert len(order.items) == 2
