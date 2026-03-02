@@ -10,6 +10,11 @@ class ProductRepository(ABC):
         pass
 
     @abstractmethod
+    def save(self, product: Product) -> Product:
+        """Persiste un nuevo producto en la DB."""
+        pass
+
+    @abstractmethod
     def update(self, product: Product) -> None:
         """Persiste los cambios de stock en la DB."""
         pass
