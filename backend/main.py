@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from backend.app.infrastructure.db.database import engine, Base
-from backend.app.infrastructure.db import models  # Importante para que SQLAlquemy vea los modelos
+from app.infrastructure.db.database import engine, Base
+from app.infrastructure.db import models  # Importante para que SQLAlquemy vea los modelos
 
 # Esta línea crea las tablas en la base de datos si no existen
 # Es el equivalente al 'update' de Hibernate en Java
