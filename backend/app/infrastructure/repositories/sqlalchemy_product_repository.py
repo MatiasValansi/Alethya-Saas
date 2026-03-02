@@ -32,6 +32,25 @@ class SqlAlchemyProductRepository(ProductRepository):
             code=model.code
         )
 
+    def get_by_code(self, code: str, tenant_id: UUID) -> Optional[Product]:
+        model = self.db.query(ProductModel).filter(
+            ProductModel.code == code,
+            ProductModel.tenant_id == tenant_id
+        ).first()
+
+        if not model:
+            return None
+
+        return Product(
+            id=model.id,
+            tenant_id=model.tenant_id,
+            name=model.name,
+            description=model.description,
+            price=model.price,
+            stock=model.stock,
+            code=model.code
+        )
+
     def save(self, product: Product) -> Product:
         # 1. Mapeo de Entidad -> Modelo
         model = ProductModel(

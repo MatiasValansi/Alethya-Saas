@@ -10,6 +10,11 @@ class ProductRepository(ABC):
         pass
 
     @abstractmethod
+    def get_by_code(self, code: str, tenant_id: UUID) -> Optional[Product]:
+        """Busca un producto por su código identificador, filtrado por tenant."""
+        pass
+
+    @abstractmethod
     def save(self, product: Product) -> Product:
         """Persiste un nuevo producto en la DB."""
         pass
