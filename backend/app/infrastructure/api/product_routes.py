@@ -5,6 +5,8 @@ from app.infrastructure.api.schemas import ProductCreate, ProductResponse
 from app.infrastructure.repositories.sqlalchemy_product_repository import SqlAlchemyProductRepository
 from app.use_cases.create_product import CreateProductUseCase
 from app.domain.entities.product import Product
+from typing import List
+from app.infrastructure.db.models import ProductModel
 
 router = APIRouter(prefix="/products", tags=["Products"])
 
@@ -27,3 +29,10 @@ def create_product(product_in: ProductCreate, db: Session = Depends(get_db)):
     # 3. Ejecutar
     created_product = use_case.execute(product_entity)
     return created_product
+
+@router.get("/", response_model=List[ProductResponse])
+def get_products(db: Session = Depends(get_db)):
+    repo = SqlAlchemyProductRepository(db)
+    # Por ahora traemos todos, luego filtraremos por tenant_id
+    products = db.query(ProductModel).all() 
+    return products
