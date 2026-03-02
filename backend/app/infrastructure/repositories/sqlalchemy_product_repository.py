@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from app.domain.entities.product import Product
 from app.domain.repositories.product_repository import ProductRepository
 from db.models import ProductModel
+from sqlalchemy.exc import SQLAlchemyError
+import logging
 
 class SqlAlchemyProductRepository(ProductRepository):
     def __init__(self, db: Session):
@@ -29,6 +31,28 @@ class SqlAlchemyProductRepository(ProductRepository):
             stock=model.stock,
             code=model.code
         )
+
+    def save(self, product: Product) -> Product:
+        # 1. Mapeo de Entidad -> Modelo
+        model = ProductModel(
+            id=product.id,
+            tenant_id=product.tenant_id,
+            name=product.name,
+            description=product.description,
+            price=product.price,
+            stock=product.stock,
+            code=product.code
+        )
+        
+        try:
+            self.db.add(model)
+            self.db.commit() # Guardamos físicamente
+            self.db.refresh(model)
+            return product
+        except SQLAlchemyError as e:
+            self.db.rollback() # ¡Vital! Si algo falla, limpiamos la transacción
+            logging.error(f"Error al guardar producto: {str(e)}")
+            raise e # Re-lanzamos para que el controlador pueda informar el error
 
     def update(self, product: Product) -> None:
         model = self.db.query(ProductModel).filter(
