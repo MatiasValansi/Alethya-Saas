@@ -3,7 +3,7 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 from app.domain.entities.product import Product
 from app.domain.repositories.product_repository import ProductRepository
-from db.models import ProductModel
+from app.infrastructure.db.models import ProductModel 
 from sqlalchemy.exc import SQLAlchemyError
 import logging
 
