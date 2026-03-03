@@ -1,26 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { PackagePlus, XCircle, Save } from 'lucide-react';
 
-// Definimos qué "instrucciones" (Props) recibe este componente
 interface ProductFormProps {
-  initialData: any;      // Los datos si estamos editando
-  isEditing: boolean;    // ¿Estamos en modo edición?
-  onSubmit: (data: any) => void; // La función que el Padre (App) ejecutará al terminar
-  onCancel: () => void;  // La función para cerrar/limpiar
+  initialData: any;      
+  isEditing: boolean;    
+  onSubmit: (data: any) => void; 
+  onCancel: () => void;  
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({ initialData, isEditing, onSubmit, onCancel }) => {
-  // Estado local: Lo que se escribe en los inputs se queda aquí hasta apretar "Guardar"
   const [formData, setFormData] = useState(initialData);
 
-  // Sincronizamos el formulario si el padre nos manda un producto diferente para editar
   useEffect(() => {
     setFormData(initialData);
   }, [initialData]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData); // Le devolvemos el paquete de datos al Padre
+    onSubmit(formData);
   };
 
   return (
@@ -42,7 +39,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, isEditing, onSub
           value={formData.name} 
           onChange={e => setFormData({...formData, name: e.target.value})} 
         />
-        {/* Agrega aquí el resto de inputs como precio y stock siguiendo el mismo patrón */}
+        
         
         <div className="flex gap-2 pt-2">
           <button type="submit" className={`flex-1 py-3 rounded font-bold text-white transition flex items-center justify-center gap-2 ${isEditing ? 'bg-blue-600 hover:bg-blue-700' : 'bg-[#bda28a] hover:bg-[#a68d77]'}`}>
