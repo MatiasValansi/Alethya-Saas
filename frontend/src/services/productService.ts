@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_URL = "http://localhost:8080/products/";
-const TENANT_ID = "3fa85f64-5717-4562-b3fc-2c963f66afa6"; // Esto luego vendrá de un login
+const API_URL = `${import.meta.env.VITE_API_URL}/products/`;
+const TENANT_ID = import.meta.env.VITE_TENANT_ID;
 
 export const productService = {
   // Obtener todos
