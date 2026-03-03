@@ -21,7 +21,7 @@ class ProductRepository(ABC):
     
     @abstractmethod
     def delete(self, product_id: UUID, tenant_id: UUID) -> bool:
-        """Elimina un producto asegurando que pertenezca al tenant."""
+        """Elimina un producto de la DB."""
         pass
     
     @abstractmethod
