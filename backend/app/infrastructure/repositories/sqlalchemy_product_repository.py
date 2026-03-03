@@ -85,28 +85,20 @@ class SqlAlchemyProductRepository(ProductRepository):
             return True
         return False
 
-    def update(self, product_id: UUID, tenant_id: UUID, data: dict) -> Optional[Product]:
-        model = self.db.query(ProductModel).filter(
-            ProductModel.id == product_id,
-            ProductModel.tenant_id == tenant_id
-        ).first()
+    def update(self, product: Product) -> Optional[Product]:
+        # Buscamos el modelo en la DB
+        model = self.db.query(ProductModel).filter(ProductModel.id == product.id).first()
         
         if not model:
             return None
             
-        for key, value in data.items():
-            setattr(model, key, value)
-            
+        # Sincronizamos el modelo con la entidad
+        model.name = product.name
+        model.price = product.price
+        model.stock = product.stock
+        model.description = product.description
+        model.code = product.code
+        
         self.db.commit()
         self.db.refresh(model)
-        
-        # Convertimos el modelo actualizado a Entidad de Dominio
-        return Product(
-            id=model.id,
-            tenant_id=model.tenant_id,
-            name=model.name,
-            description=model.description,
-            price=model.price,
-            stock=model.stock,
-            code=model.code
-        )
+        return product
