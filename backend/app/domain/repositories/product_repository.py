@@ -28,3 +28,8 @@ class ProductRepository(ABC):
     def update(self, product: Product) -> Optional[Product]:
         """Guarda los cambios de una entidad ya existente."""
         pass
+    
+    @abstractmethod
+    def get_all(self, tenant_id: UUID) -> list[Product]:
+        """Obtiene todos los productos pertenecientes a un tenant específico."""
+        pass
