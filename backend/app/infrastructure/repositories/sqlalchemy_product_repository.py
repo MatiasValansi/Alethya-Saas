@@ -102,3 +102,22 @@ class SqlAlchemyProductRepository(ProductRepository):
         self.db.commit()
         self.db.refresh(model)
         return product
+    
+    def get_all(self, tenant_id: UUID) -> list[Product]:
+        # Filtramos estrictamente por tenant_id
+        models = self.db.query(ProductModel).filter(
+            ProductModel.tenant_id == tenant_id
+        ).all()
+        
+        # Mapeo de Modelos de DB a Entidades de Dominio
+        return [
+            Product(
+                id=m.id,
+                tenant_id=m.tenant_id,
+                name=m.name,
+                description=m.description,
+                price=m.price,
+                stock=m.stock,
+                code=m.code
+            ) for m in models
+        ]
