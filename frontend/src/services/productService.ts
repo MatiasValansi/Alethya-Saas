@@ -22,9 +22,8 @@ export const productService = {
     return response.data;
   },
 
-  // ELIMINAR (Lo que acabas de hacer en el Back)
+  // ELIMINAR 
   deleteProduct: async (id: string) => {
-    // Fíjate que pasamos el tenant_id como parámetro de consulta o según tu ruta
     const response = await axios.delete(`${API_URL}${id}?tenant_id=${TENANT_ID}`);
     return response.data;
   }
