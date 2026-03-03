@@ -9,7 +9,7 @@ from app.use_cases.create_product import CreateProductUseCase
 from app.domain.entities.product import Product
 from typing import List
 from app.infrastructure.db.models import ProductModel
-from backend.app.use_cases.update_product import UpdateProductUseCase
+from app.use_cases.update_product import UpdateProductUseCase
 
 router = APIRouter(prefix="/products", tags=["Products"])
 
