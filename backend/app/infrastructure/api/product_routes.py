@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.infrastructure.db.database import get_db
@@ -37,3 +39,24 @@ def get_products(db: Session = Depends(get_db)):
     products = db.query(ProductModel).all() 
     return products
 
+@router.delete("/{product_id}")
+def delete_product(product_id: UUID, tenant_id: UUID, db: Session = Depends(get_db)):
+    # Nota: En producción, el tenant_id vendría de un Token JWT, no de la URL
+    repo = SqlAlchemyProductRepository(db)
+    success = repo.delete(product_id, tenant_id)
+    
+    if not success:
+        raise HTTPException(status_code=404, detail="Producto no encontrado o no autorizado")
+        
+    return {"message": "Producto eliminado correctamente"}
+
+@router.put("/{product_id}", response_model=ProductResponse)
+def update_product(product_id: UUID, product_in: ProductCreate, db: Session = Depends(get_db)):
+    repo = SqlAlchemyProductRepository(db)
+    # Usamos .model_dump() (Pydantic v2) para obtener los datos
+    updated_product = repo.update(product_id, product_in.tenant_id, product_in.model_dump())
+    
+    if not updated_product:
+        raise HTTPException(status_code=404, detail="Error al actualizar")
+        
+    return updated_product
