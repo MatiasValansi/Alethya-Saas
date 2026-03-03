@@ -10,6 +10,7 @@ from app.domain.entities.product import Product
 from typing import List
 from app.infrastructure.db.models import ProductModel
 from app.use_cases.update_product import UpdateProductUseCase
+from app.use_cases.delete_product import DeleteProductUseCase
 
 router = APIRouter(prefix="/products", tags=["Products"])
 
@@ -42,14 +43,15 @@ def get_products(db: Session = Depends(get_db)):
 
 @router.delete("/{product_id}")
 def delete_product(product_id: UUID, tenant_id: UUID, db: Session = Depends(get_db)):
-    # Nota: En producción, el tenant_id vendría de un Token JWT, no de la URL
     repo = SqlAlchemyProductRepository(db)
-    success = repo.delete(product_id, tenant_id)
+    use_case = DeleteProductUseCase(repo)
     
-    if not success:
-        raise HTTPException(status_code=404, detail="Producto no encontrado o no autorizado")
-        
-    return {"message": "Producto eliminado correctamente"}
+    try:
+        use_case.execute(product_id, tenant_id)
+        return {"status": "success", "message": "Producto eliminado"}
+    except ValueError as e:
+        # Aquí capturamos el error de la regla de negocio (ej: mucho stock)
+        raise HTTPException(status_code=400, detail=str(e))
 
 @router.put("/{product_id}", response_model=ProductResponse)
 def update_product(product_id: UUID, product_in: ProductCreate, db: Session = Depends(get_db)):
