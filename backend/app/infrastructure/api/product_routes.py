@@ -35,12 +35,6 @@ def create_product(product_in: ProductCreate, db: Session = Depends(get_db)):
     created_product = use_case.execute(product_entity)
     return created_product
 
-@router.get("/", response_model=List[ProductResponse])
-def get_products(db: Session = Depends(get_db)):
-    repo = SqlAlchemyProductRepository(db)
-    products = db.query(ProductModel).all() 
-    return products
-
 @router.delete("/{product_id}")
 def delete_product(product_id: UUID, tenant_id: UUID, db: Session = Depends(get_db)):
     repo = SqlAlchemyProductRepository(db)
