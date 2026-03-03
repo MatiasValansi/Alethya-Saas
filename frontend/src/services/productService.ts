@@ -6,7 +6,9 @@ const TENANT_ID = import.meta.env.VITE_TENANT_ID;
 export const productService = {
   // Obtener todos
   getProducts: async () => {
-    const response = await axios.get(API_URL);
+    const response = await axios.get(API_URL, {
+      params: { tenant_id: TENANT_ID } 
+    });
     return response.data;
   },
 
