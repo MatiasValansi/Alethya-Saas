@@ -73,11 +73,40 @@ class SqlAlchemyProductRepository(ProductRepository):
             logging.error(f"Error al guardar producto: {str(e)}")
             raise e # Re-lanzamos para que el controlador pueda informar el error
 
-    def update(self, product: Product) -> None:
+    def delete(self, product_id: UUID, tenant_id: UUID) -> bool:
         model = self.db.query(ProductModel).filter(
-            ProductModel.id == product.id
+            ProductModel.id == product_id,
+            ProductModel.tenant_id == tenant_id
         ).first()
         
         if model:
-            model.stock = product.stock # Actualizamos el stock tras la venta
+            self.db.delete(model)
             self.db.commit()
+            return True
+        return False
+
+    def update(self, product_id: UUID, tenant_id: UUID, data: dict) -> Optional[Product]:
+        model = self.db.query(ProductModel).filter(
+            ProductModel.id == product_id,
+            ProductModel.tenant_id == tenant_id
+        ).first()
+        
+        if not model:
+            return None
+            
+        for key, value in data.items():
+            setattr(model, key, value)
+            
+        self.db.commit()
+        self.db.refresh(model)
+        
+        # Convertimos el modelo actualizado a Entidad de Dominio
+        return Product(
+            id=model.id,
+            tenant_id=model.tenant_id,
+            name=model.name,
+            description=model.description,
+            price=model.price,
+            stock=model.stock,
+            code=model.code
+        )
