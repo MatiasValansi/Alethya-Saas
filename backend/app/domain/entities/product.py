@@ -32,3 +32,14 @@ class Product:
         if new_price < 0:
             raise ValueError("El precio no puede ser negativo")
         self.price = new_price
+        
+    def update_data(self, name: str, price: float, stock: int):
+        """Regla de Negocio: Valida los datos antes de cambiar el estado."""
+        if price <= 0:
+            raise ValueError("El precio debe ser mayor a cero")
+        if stock < 0:
+            raise ValueError("El stock no puede ser negativo")
+        
+        self.name = name
+        self.price = price
+        self.stock = stock
