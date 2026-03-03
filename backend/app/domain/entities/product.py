@@ -43,3 +43,9 @@ class Product:
         self.name = name
         self.price = price
         self.stock = stock
+        
+    def can_be_deleted(self) -> bool:
+        """Regla de Negocio: Verifica si el producto es apto para borrarse."""
+        if self.stock > 1:
+            return False 
+        return True 
