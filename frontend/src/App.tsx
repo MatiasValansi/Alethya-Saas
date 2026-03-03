@@ -1,43 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { productService } from './services/productService';
+import React, { useState } from 'react';
+import type { Product } from './types/product';
+import { useProducts } from './hooks/useProducts';
 import ProductForm from './components/ProductForm';
 import ProductTable from './components/ProductTable';
 
+const TEMP_TENANT_ID = import.meta.env.VITE_TENANT_ID;
+
 function App() {
-  const [products, setProducts] = useState([]);
+  // 1. Usamos nuestro "Cerebro" (Hook)
+  const { products, addProduct, updateProduct, deleteProduct, error } = useProducts();
+
+  // 2. Estados solo para la UI (Edición)
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [currentProduct, setCurrentProduct] = useState(null);
+  const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
 
-  const loadProducts = async () => {
-    const data = await productService.getProducts();
-    setProducts(data);
-  };
-
-  useEffect(() => { loadProducts(); }, []);
-
-  const handleFormSubmit = async (formData: any) => {
+  const handleFormSubmit = async (data: Product) => {
     if (editingId) {
-      await productService.updateProduct(editingId, formData);
+      await updateProduct(editingId, data);
     } else {
-      await productService.createProduct(formData);
+      await addProduct(data);
     }
     cancelEdit();
-    loadProducts();
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("¿Estás seguro de que quieres eliminar esta prenda?")) {
+    if (window.confirm("¿Eliminar prenda?")) {
       try {
-        await productService.deleteProduct(id);
-        loadProducts();
-      } catch (error: any) {
-        alert(error.response?.data?.detail || "Error al eliminar");
+        await deleteProduct(id);
+      } catch (err: any) {
+        alert(err.message);
       }
     }
   };
 
-  const startEditing = (p: any) => {
-    setEditingId(p.id);
+  const startEditing = (p: Product) => {
+    setEditingId(p.id || null);
     setCurrentProduct(p);
   };
 
@@ -47,16 +44,17 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="bg-[#bda28a] text-white p-6 rounded-t-lg text-center mb-8 shadow-md">
-          <h1 className="text-4xl font-bold tracking-widest">ALETHYA</h1>
-        </div>
+    <div className="min-h-screen w-full bg-gray-100 p-8">
+      <div className="max-w-7xl mx-auto">
+        <header className="bg-[#bda28a] text-white p-8 rounded-xl shadow-lg text-center mb-10">
+          <h1 className="text-5xl font-black tracking-widest uppercase">ALETHYA</h1>
+        </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {error && <div className="bg-red-100 text-red-700 p-4 mb-4 rounded">{error}</div>}
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <ProductForm 
-            initialData={currentProduct || { name: '', description: '', price: 0, stock: 0, code: '', tenant_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6" }}
+            initialData={currentProduct || { name: '', description: '', price: 0, stock: 0, code: '', tenant_id: TEMP_TENANT_ID }}
             isEditing={!!editingId}
             onSubmit={handleFormSubmit}
             onCancel={cancelEdit}
