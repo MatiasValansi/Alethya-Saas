@@ -36,3 +36,4 @@ def get_products(db: Session = Depends(get_db)):
     # Por ahora traemos todos, luego filtraremos por tenant_id
     products = db.query(ProductModel).all() 
     return products
+

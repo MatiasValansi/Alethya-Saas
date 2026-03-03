@@ -23,3 +23,13 @@ class ProductRepository(ABC):
     def update(self, product: Product) -> None:
         """Persiste los cambios de stock en la DB."""
         pass
+    
+    @abstractmethod
+    def delete(self, product_id: UUID, tenant_id: UUID) -> bool:
+        """Elimina un producto asegurando que pertenezca al tenant."""
+        pass
+
+    @abstractmethod
+    def update(self, product_id: UUID, tenant_id: UUID, data: dict) -> Optional[Product]:
+        """Actualiza un producto y devuelve la entidad actualizada."""
+        pass
