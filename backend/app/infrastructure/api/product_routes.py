@@ -9,6 +9,7 @@ from app.use_cases.create_product import CreateProductUseCase
 from app.domain.entities.product import Product
 from typing import List
 from app.infrastructure.db.models import ProductModel
+from backend.app.use_cases.update_product import UpdateProductUseCase
 
 router = APIRouter(prefix="/products", tags=["Products"])
 
@@ -53,10 +54,10 @@ def delete_product(product_id: UUID, tenant_id: UUID, db: Session = Depends(get_
 @router.put("/{product_id}", response_model=ProductResponse)
 def update_product(product_id: UUID, product_in: ProductCreate, db: Session = Depends(get_db)):
     repo = SqlAlchemyProductRepository(db)
-    # Usamos .model_dump() (Pydantic v2) para obtener los datos
-    updated_product = repo.update(product_id, product_in.tenant_id, product_in.model_dump())
+    use_case = UpdateProductUseCase(repo)
     
-    if not updated_product:
-        raise HTTPException(status_code=404, detail="Error al actualizar")
-        
-    return updated_product
+    try:
+        updated = use_case.execute(product_id, product_in.tenant_id, product_in.model_dump())
+        return updated
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
