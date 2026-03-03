@@ -17,19 +17,14 @@ class ProductRepository(ABC):
     @abstractmethod
     def save(self, product: Product) -> Product:
         """Persiste un nuevo producto en la DB."""
-        pass
-
-    @abstractmethod
-    def update(self, product: Product) -> None:
-        """Persiste los cambios de stock en la DB."""
-        pass
+        pass    
     
     @abstractmethod
     def delete(self, product_id: UUID, tenant_id: UUID) -> bool:
         """Elimina un producto asegurando que pertenezca al tenant."""
         pass
-
+    
     @abstractmethod
-    def update(self, product_id: UUID, tenant_id: UUID, data: dict) -> Optional[Product]:
-        """Actualiza un producto y devuelve la entidad actualizada."""
+    def update(self, product: Product) -> Optional[Product]:
+        """Guarda los cambios de una entidad ya existente."""
         pass
