@@ -1,13 +1,14 @@
 from dataclasses import dataclass, field
+from typing import Optional
 from uuid import UUID, uuid4
 
 @dataclass
 class Client:
     dni: str
     name: str
-    email: str
-    phone: str
-    address: str
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
     tenant_id: UUID
     id: UUID = field(default_factory=uuid4)
     
