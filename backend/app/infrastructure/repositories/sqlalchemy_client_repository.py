@@ -30,6 +30,14 @@ class SqlAlchemyClientRepository(ClientRepository):
             ClientModel.tenant_id == tenant_id
         ).first()
         return self._to_entity(model) if model else None
+    
+    def get_by_dni(self, dni: str, tenant_id: UUID) -> Optional[Client]:
+        model = self.db.query(ClientModel).filter(
+            ClientModel.dni == dni,
+            ClientModel.tenant_id == tenant_id
+        ).first()
+        
+        return self._to_entity(model) if model else None
 
     def get_all(self, tenant_id: UUID) -> List[Client]:
         models = self.db.query(ClientModel).filter(ClientModel.tenant_id == tenant_id).all()

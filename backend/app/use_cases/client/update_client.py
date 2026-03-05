@@ -11,16 +11,16 @@ class UpdateClientUseCase:
         # Verificar existencia y propiedad
         existing_client = self.client_repo.get_by_id(client_id, tenant_id)
         if not existing_client:
-            raise ValueError("Cliente no encontrado o acceso denegado.")
+            raise ValueError("Cliente no encontrado.")
 
-        # Si se intenta cambiar el DNI, validar que no esté duplicado
+        # Si quiere cambiar el DNI, verificamos que el NUEVO no esté ocupado
         new_dni = update_data.get('dni')
         if new_dni and new_dni != existing_client.dni:
-            # Buscamos si el DNI nuevo ya lo tiene ALGUIEN MÁS en el mismo tenant
-            all_clients = self.client_repo.get_all(tenant_id)
-            if any(c.dni == new_dni and c.id != client_id for c in all_clients):
-                raise ValueError(f"No se puede actualizar: El DNI {new_dni} ya pertenece a otro cliente.")
-
+            collision = self.client_repo.get_by_dni(new_dni, tenant_id)
+            # Si alguien MÁS tiene ese DNI, bloqueamos
+            if collision and collision.id != client_id:
+                raise ValueError(f"El DNI {new_dni} ya lo tiene otro cliente.")
+        
         # Aplicar cambios a la entidad - --> esto dispara validaciones de Dominio)
         for key, value in update_data.items():
             if hasattr(existing_client, key):

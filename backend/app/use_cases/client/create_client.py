@@ -6,13 +6,10 @@ class CreateClientUseCase:
         self.client_repo = client_repo
 
     def execute(self, client_data: dict) -> Client:
-        # 1. Lógica de Negocio: Verificar si el DNI ya existe para este Tenant
-        existing_clients = self.client_repo.get_all(client_data['tenant_id'])
-        if any(c.dni == client_data['dni'] for c in existing_clients):
-            raise ValueError(f"Ya existe un cliente registrado con el DNI {client_data['dni']}.")
+        existing = self.client_repo.get_by_dni(client_data['dni'], client_data['tenant_id'])
+        
+        if existing:
+            raise ValueError(f"Ya existe un cliente con el DNI {client_data['dni']}.")
 
-        # 2. Crear la entidad (esto dispara las validaciones del __post_init__)
         new_client = Client(**client_data)
-
-        # 3. Persistir
         return self.client_repo.save(new_client)

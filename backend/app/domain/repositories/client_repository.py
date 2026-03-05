@@ -14,6 +14,11 @@ class ClientRepository(ABC):
     def get_by_id(self, client_id: UUID, tenant_id: UUID)  -> Optional[Client]:
         """Busca un cliente por ID asegurando aislamiento por tenant."""
         pass
+    
+    @abstractmethod
+    def get_by_dni(self, dni: str, tenant_id: UUID) -> Optional[Client]:
+        """Busca un cliente específico por su documento dentro de un comercio."""
+        pass
 
     @abstractmethod
     def get_all(self, tenant_id: UUID) -> List[Client]:
