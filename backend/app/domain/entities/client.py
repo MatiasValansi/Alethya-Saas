@@ -17,3 +17,10 @@ class Client:
         import re
         pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
         return re.match(pattern, self.email) is not None
+    
+    def __post_init__(self):
+        """Validaciones automáticas al crear la entidad."""
+        if not self.name or len(self.name.strip()) < 2:
+            raise ValueError("El nombre del cliente debe tener al menos 2 caracteres.")
+        if not self.dni or len(self.dni) < 5:
+            raise ValueError("El DNI proporcionado no es válido.")
