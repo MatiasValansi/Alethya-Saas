@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock
 from uuid import uuid4
-from app.use_cases.create_order import CreateOrderUseCase
+from backend.app.use_cases.order.create_order import CreateOrderUseCase
 from app.domain.entities.product import Product
 from app.domain.exceptions import InsufficientStockError
 

@@ -1,7 +1,6 @@
 from app.domain.entities.product import Product
 from app.domain.repositories.product_repository import ProductRepository
 from app.domain.exceptions import ProductAlreadyExistsError
-from .create_order import CreateOrderUseCase # Solo como referencia de la carpeta
 
 class CreateProductUseCase:
     def __init__(self, product_repo: ProductRepository):
