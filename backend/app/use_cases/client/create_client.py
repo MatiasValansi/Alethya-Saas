@@ -7,7 +7,6 @@ class CreateClientUseCase:
 
     def execute(self, client_data: dict) -> Client:
         # 1. Lógica de Negocio: Verificar si el DNI ya existe para este Tenant
-        # (Para esto, necesitarías añadir un método 'get_by_dni' al repo o usar get_all)
         existing_clients = self.client_repo.get_all(client_data['tenant_id'])
         if any(c.dni == client_data['dni'] for c in existing_clients):
             raise ValueError(f"Ya existe un cliente registrado con el DNI {client_data['dni']}.")
