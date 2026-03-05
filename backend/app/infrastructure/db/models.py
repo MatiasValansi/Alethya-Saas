@@ -13,3 +13,14 @@ class ProductModel(Base):
     price = Column(Float, nullable=False)
     stock = Column(Integer, nullable=False)
     code = Column(String, nullable=False)
+    
+class ClientModel(Base):
+    __tablename__ = "clients"
+    
+    id = Column(uuid.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id = Column(uuid.UUID(as_uuid=True), nullable=False, index=True) # Index para rapidez
+    name = Column(String, nullable=False)
+    dni = Column(String, unique=True, nullable=False)
+    email = Column(String)
+    phone = Column(String)
+    address = Column(String)
