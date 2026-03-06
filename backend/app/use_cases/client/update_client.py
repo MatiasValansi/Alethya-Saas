@@ -1,5 +1,4 @@
 from uuid import UUID
-
 from app.domain.repositories.client_repository import ClientRepository
 
 
