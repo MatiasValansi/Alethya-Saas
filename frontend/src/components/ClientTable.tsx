@@ -1,54 +1,55 @@
+// frontend/src/components/ClientTable.tsx
 import React from 'react';
 import type { Client } from '../types/client';
 
 interface ClientTableProps {
   clients: Client[];
-  onDelete: (id: string) => void;
   isLoading: boolean;
+  onEdit: (client: Client) => void; // Nueva prop
+  onDelete: (id: string) => Promise<void>;
 }
 
-const ClientTable: React.FC<ClientTableProps> = ({ clients, onDelete, isLoading }) => {
-  if (isLoading) {
-    return <div className="p-4 text-center text-blue-500">Cargando clientes de Alethya...</div>;
-  }
-
-  if (clients.length === 0) {
-    return <div className="p-4 text-center text-gray-500">No hay clientes registrados aún.</div>;
-  }
+const ClientTable: React.FC<ClientTableProps> = ({ clients, isLoading, onEdit, onDelete }) => {
+  if (isLoading) return <div className="text-center py-10 text-gray-400">Cargando clientes...</div>;
 
   return (
-    <div className="overflow-x-auto bg-white rounded-lg shadow">
-      <table className="min-w-full leading-normal">
-        <thead>
-          <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-            <th className="py-3 px-6 text-left">Nombre</th>
-            <th className="py-3 px-6 text-left">DNI</th>
-            <th className="py-3 px-6 text-left">Contacto</th>
-            <th className="py-3 px-6 text-center">Acciones</th>
+    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      <table className="w-full text-left border-collapse">
+        <thead className="bg-gray-50 border-b">
+          <tr>
+            <th className="p-4 text-sm font-bold text-gray-600">Nombre / DNI</th>
+            <th className="p-4 text-sm font-bold text-gray-600">Contacto</th>
+            <th className="p-4 text-sm font-bold text-gray-600 text-center">Acciones</th>
           </tr>
         </thead>
-        <tbody className="text-gray-600 text-sm font-light">
+        <tbody>
           {clients.map((client) => (
-            <tr key={client.id} className="border-b border-gray-200 hover:bg-gray-50">
-              <td className="py-3 px-6 text-left whitespace-nowrap">
-                <span className="font-medium">{client.name}</span>
+            <tr key={client.id} className="border-b hover:bg-gray-50 transition">
+              <td className="p-4">
+                <div className="font-bold text-gray-800">{client.name}</div>
+                <div className="text-xs text-gray-400">{client.dni}</div>
               </td>
-              <td className="py-3 px-6 text-left">
-                {client.dni}
+              <td className="p-4">
+                <div className="text-sm text-blue-500">{client.email || '-'}</div>
+                <div className="text-xs text-gray-400">{client.phone || '-'}</div>
               </td>
-              <td className="py-3 px-6 text-left">
-                <div className="flex flex-col">
-                  <span className="text-xs text-blue-500">{client.email}</span>
-                  <span className="text-xs text-gray-400">{client.phone}</span>
+              <td className="p-4">
+                <div className="flex justify-center gap-2">
+                  <button 
+                    onClick={() => onEdit(client)} // Usamos la nueva prop
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                    title="Editar"
+                  >
+                    ✎
+                  </button>
+                  <button 
+                    onClick={() => client.id && onDelete(client.id)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                    title="Eliminar"
+                  >
+                    🗑
+                  </button>
                 </div>
-              </td>
-              <td className="py-3 px-6 text-center">
-                <button 
-                  onClick={() => client.id && onDelete(client.id)}
-                  className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-xs hover:bg-red-200 transition"
-                >
-                  Eliminar
-                </button>
               </td>
             </tr>
           ))}

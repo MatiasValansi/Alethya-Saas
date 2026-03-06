@@ -6,6 +6,7 @@ import ProductForm from './components/ProductForm';
 import ProductTable from './components/ProductTable';
 import ClientForm from './components/ClientForm'; // Importamos la UI de clientes
 import ClientTable from './components/ClientTable';
+import type { Client } from './types/client';
 
 const TEMP_TENANT_ID = import.meta.env.VITE_TENANT_ID;
 
@@ -14,20 +15,17 @@ function App() {
   const { products, addProduct, updateProduct, deleteProduct, error: productError } = useProducts();
   
   // Hook de Clientes
-  const { 
-    clients, 
-    isLoading: loadingClients, 
-    error: clientError, 
-    addClient, 
-    deleteClient 
-  } = useClients();
+  const { clients, isLoading: loadingClients, error: clientError, addClient, updateClient, deleteClient } = useClients();
 
   // Estado para navegar entre secciones
   const [activeTab, setActiveTab] = useState<'products' | 'clients'>('products');
 
-  // Estados para edición de Productos
+  // Estados para edición 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
+
+  const [editingClientId, setEditingClientId] = useState<string | null>(null);
+  const [currentClient, setCurrentClient] = useState<Client | null>(null);
 
   // Lógica de Productos
   const handleProductSubmit = async (data: Product) => {
@@ -46,6 +44,35 @@ function App() {
     setCurrentProduct(null);
   };
 
+  // Lógica de Clientes
+  const handleClientSubmit = async (data: Client) => {
+    if (editingClientId) {
+      await updateClient(editingClientId, data);
+    } else {
+      await addClient(data);
+    }
+    cancelClientEdit();
+  };
+
+  const startEditingClient = (c: Client) => {
+    setEditingClientId(c.id || null);
+    setCurrentClient(c);
+  };
+
+  const cancelClientEdit = () => {
+    setEditingClientId(null);
+    setCurrentClient(null);
+  };
+
+  const handleDeleteClient = async (id: string) => {
+    if (window.confirm("¿Estás seguro de eliminar este cliente?")) {
+      try {
+        await deleteClient(id);
+      } catch (err: any) {
+        alert(err.message);
+      }
+    }
+  };
   return (
     <div className="min-h-screen w-full bg-gray-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
@@ -89,19 +116,22 @@ function App() {
           </div>
         )}
 
-        {/* Sección de Clientes */}
+        {/* SECCIÓN CLIENTES */}
         {activeTab === 'clients' && (
-          <div className="animate-fadeIn">
-            {clientError && <div className="bg-red-100 text-red-700 p-4 mb-4 rounded shadow-sm">{clientError}</div>}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <ClientForm onSubmit={addClient} />
-              <div className="lg:col-span-2">
-                <ClientTable 
-                  clients={clients} 
-                  isLoading={loadingClients} 
-                  onDelete={deleteClient} 
-                />
-              </div>
+          <div className="animate-fadeIn grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <ClientForm 
+              initialData={currentClient || { dni: '', name: '', email: '', phone: '', address: '', tenant_id: TEMP_TENANT_ID }}
+              isEditing={!!editingClientId}
+              onSubmit={handleClientSubmit}
+              onCancel={cancelClientEdit}
+            />
+            <div className="lg:col-span-2">
+              <ClientTable 
+                clients={clients} 
+                isLoading={loadingClients} 
+                onEdit={startEditingClient} 
+                onDelete={handleDeleteClient} 
+              />
             </div>
           </div>
         )}
