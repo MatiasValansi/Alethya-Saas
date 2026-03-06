@@ -3,20 +3,21 @@ from fastapi.middleware.cors import CORSMiddleware # 1. Importamos el middleware
 from app.infrastructure.db.database import engine, Base
 from app.infrastructure.db import models
 from app.infrastructure.api.product_routes import router as product_router
+from app.infrastructure.api import client_routes
 
 # Creamos las tablas en la base de datos
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Alethya SaaS API")
 
-# 2. Definimos quiénes tienen permiso de entrar (Orígenes)
+# Definimos quiénes tienen permiso de entrar (Orígenes)
 # Por ahora permitimos localhost donde correrá React (Vite)
 origins = [
     "http://localhost:5174",
     "http://127.0.0.1:5174",
 ]
 
-# 3. Agregamos el middleware a la aplicación
+# Agregamos el middleware a la aplicación
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,      # Lista de URLs permitidas
@@ -26,6 +27,7 @@ app.add_middleware(
 )
 
 app.include_router(product_router)
+app.include_router(client_routes.router)
 
 @app.get("/")
 def read_root():
