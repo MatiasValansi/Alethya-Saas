@@ -15,7 +15,6 @@ export const clientService = {
 
   // Crear un nuevo cliente
   createClient: async (clientData: Client): Promise<Client> => {
-    // El tenant_id ya debería venir en el objeto, pero nos aseguramos
     const response = await axios.post(API_URL, clientData);
     return response.data;
   },
