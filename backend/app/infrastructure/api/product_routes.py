@@ -4,13 +4,13 @@ from sqlalchemy.orm import Session
 from app.infrastructure.db.database import get_db
 from app.infrastructure.api.schemas import ProductCreate, ProductResponse
 from app.infrastructure.repositories.sqlalchemy_product_repository import SqlAlchemyProductRepository
-from app.use_cases.create_product import CreateProductUseCase
+from app.use_cases.product.create_product import CreateProductUseCase
 from app.domain.entities.product import Product
 from typing import List
 from app.infrastructure.db.models import ProductModel
-from app.use_cases.update_product import UpdateProductUseCase
-from app.use_cases.delete_product import DeleteProductUseCase
-from app.use_cases.get_all_products import GetAllProductsUseCase
+from app.use_cases.product.update_product import UpdateProductUseCase
+from app.use_cases.product.delete_product import DeleteProductUseCase
+from app.use_cases.product.get_all_products import GetAllProductsUseCase
 
 
 router = APIRouter(prefix="/products", tags=["Products"])

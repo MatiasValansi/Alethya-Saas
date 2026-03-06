@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from uuid import UUID
-from app.infrastructure.database.database import get_db
+from app.infrastructure.db.database import get_db
 from app.infrastructure.repositories.sqlalchemy_client_repository import SqlAlchemyClientRepository
 from app.use_cases.client.create_client import CreateClientUseCase
 from app.use_cases.client.get_all_clients import GetAllClientsUseCase

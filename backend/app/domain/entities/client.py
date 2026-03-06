@@ -6,10 +6,10 @@ from uuid import UUID, uuid4
 class Client:
     dni: str
     name: str
+    tenant_id: UUID
     email: Optional[str] = None
     phone: Optional[str] = None
-    address: Optional[str] = None
-    tenant_id: UUID
+    address: Optional[str] = None    
     id: UUID = field(default_factory=uuid4)
     
     def email_is_valid(self) -> bool:

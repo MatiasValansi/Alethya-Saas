@@ -1,5 +1,6 @@
 from uuid import UUID
 from app.domain.repositories.client_repository import ClientRepository
+from app.domain.entities.client import Client
 
 
 class UpdateClientUseCase:

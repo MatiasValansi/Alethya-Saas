@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Float, Integer, ForeignKey
+from sqlalchemy import UUID, Column, String, Float, Integer, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 import uuid
 from .database import Base
@@ -17,8 +17,8 @@ class ProductModel(Base):
 class ClientModel(Base):
     __tablename__ = "clients"
     
-    id = Column(uuid.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    tenant_id = Column(uuid.UUID(as_uuid=True), nullable=False, index=True) # Index para rapidez
+    id = Column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id = Column(PG_UUID(as_uuid=True), nullable=False, index=True) # Index para rapidez
     name = Column(String, nullable=False)
     dni = Column(String, unique=True, nullable=False)
     email = Column(String)
