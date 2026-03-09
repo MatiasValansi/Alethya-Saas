@@ -1,6 +1,8 @@
+from datetime import datetime
+
 from pydantic import BaseModel, Field, EmailStr
 from uuid import UUID
-from typing import Optional
+from typing import List, Optional
 
 
 class ProductBase(BaseModel):
@@ -33,5 +35,39 @@ class ClientCreate(ClientBase):
 
 class ClientResponse(ClientBase):
     id: UUID
+    class Config:
+        from_attributes = True
+        
+        
+class OrderItemBase(BaseModel):
+    product_id: UUID
+    quantity: int = Field(..., gt=0) # Validamos que la cantidad sea mayor a 0
+
+class OrderItemCreate(OrderItemBase):
+    pass
+
+class OrderItemResponse(OrderItemBase):
+    id: UUID
+    price_at_sale: float
+
+    class Config:
+        from_attributes = True
+
+
+class OrderBase(BaseModel):
+    client_id: Optional[UUID] = None
+    tenant_id: UUID
+
+class OrderCreate(OrderBase):
+    # Una venta se crea enviando una lista de productos y cantidades
+    items: List[OrderItemCreate]
+
+class OrderResponse(OrderBase):
+    id: UUID
+    created_at: datetime
+    total: float
+    status: str
+    items: List[OrderItemResponse] # Incluimos el detalle en la respuesta
+
     class Config:
         from_attributes = True
