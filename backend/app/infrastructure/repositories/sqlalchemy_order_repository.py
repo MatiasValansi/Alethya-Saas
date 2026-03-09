@@ -47,7 +47,14 @@ class SqlAlchemyOrderRepository:
         self.db.commit()
         self.db.refresh(new_order)
         return new_order
-
-    def get_all_by_tenant(self, tenant_id: UUID) -> List[OrderModel]:
-        # Traemos todas las ventas de este comercio
+    
+    def get_all(self, tenant_id: UUID):
+        # Retorna todas las ventas de un comercio específico
         return self.db.query(OrderModel).filter(OrderModel.tenant_id == tenant_id).all()
+
+    def get_by_id(self, order_id: UUID, tenant_id: UUID):
+        # Busca una venta puntual asegurando el aislamiento del tenant
+        return self.db.query(OrderModel).filter(
+            OrderModel.id == order_id,
+            OrderModel.tenant_id == tenant_id
+        ).first()
