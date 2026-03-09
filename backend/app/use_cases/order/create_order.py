@@ -1,35 +1,31 @@
+from app.infrastructure.repositories.sqlalchemy_order_repository import SqlAlchemyOrderRepository
+from app.infrastructure.repositories.sqlalchemy_product_repository import SqlAlchemyProductRepository
 from uuid import UUID
-from app.domain.entities.order import Order
-from app.domain.repositories.product_repository import ProductRepository
-from app.domain.repositories.order_repository import OrderRepository # Nuevo
-from app.domain.exceptions import InsufficientStockError
 
 class CreateOrderUseCase:
-    def __init__(self, product_repo: ProductRepository, order_repo: OrderRepository):
+    def __init__(self, order_repo: SqlAlchemyOrderRepository, product_repo: SqlAlchemyProductRepository):
+        self.order_repo = order_repo
         self.product_repo = product_repo
-        self.order_repo = order_repo # Inyección del repositorio de órdenes
 
-    def execute(self, client_id: UUID, tenant_id: UUID, items_data: list) -> Order:
-        order = Order(client_id=client_id, tenant_id=tenant_id)
-
-        for item in items_data:
-            product = self.product_repo.get_by_id(item["product_id"], tenant_id)
-            
+    def execute(self, order_data: dict, items: list):
+        # Validar Stock antes de hacer nada
+        for item in items:
+            product = self.product_repo.get_by_id(item["product_id"], order_data["tenant_id"])
             if not product:
-                raise ValueError("Producto no encontrado")
-
-            if not product.has_stock(item["quantity"]):
-                raise InsufficientStockError(
-                    product_name=product.name,
-                    available=product.stock,
-                    required=item["quantity"]
-                )
-
-            product.decrease_stock(item["quantity"])
-            order.add_item(product.id, item["quantity"], product.price)
+                raise ValueError(f"Producto {item['product_id']} no encontrado")
             
-            self.product_repo.update(product)
+            if product.stock < item["quantity"]:
+                raise ValueError(f"Stock insuficiente para {product.name}. Disponible: {product.stock}")
 
-        # Paso final: Persistir la orden completa
-        self.order_repo.save(order) 
-        return order
+        # Guardar la Venta (El repo ya calcula el total y crea los items)
+        new_order = self.order_repo.save(order_data, items)
+
+        # Descontar Stock del Inventario
+        for item in items:
+            self.product_repo.update(
+                product_id=item["product_id"], 
+                tenant_id=order_data["tenant_id"], 
+                quantity=-item["quantity"] # Valor negativo para restar
+            )
+
+        return new_order
