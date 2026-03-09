@@ -1,3 +1,6 @@
+from typing import List
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.infrastructure.db.database import get_db
@@ -5,6 +8,8 @@ from app.infrastructure.api.schemas import OrderCreate, OrderResponse
 from app.infrastructure.repositories.sqlalchemy_order_repository import SqlAlchemyOrderRepository
 from app.infrastructure.repositories.sqlalchemy_product_repository import SqlAlchemyProductRepository
 from app.use_cases.order.create_order import CreateOrderUseCase
+from app.use_cases.order.get_all_orders import GetAllOrdersUseCase
+from app.use_cases.order.get_by_id_order import GetOrderByIdUseCase
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
@@ -22,3 +27,18 @@ def create_order(order_in: OrderCreate, db: Session = Depends(get_db)):
         return use_case.execute(order_data, items_data)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/", response_model=List[OrderResponse])
+def get_all_orders(tenant_id: UUID, db: Session = Depends(get_db)):
+    repo = SqlAlchemyOrderRepository(db)
+    use_case = GetAllOrdersUseCase(repo)
+    return use_case.execute(tenant_id)
+
+@router.get("/{order_id}", response_model=OrderResponse)
+def get_order(order_id: UUID, tenant_id: UUID, db: Session = Depends(get_db)):
+    repo = SqlAlchemyOrderRepository(db)
+    use_case = GetOrderByIdUseCase(repo)
+    try:
+        return use_case.execute(order_id, tenant_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
