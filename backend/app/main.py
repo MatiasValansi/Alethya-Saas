@@ -4,6 +4,7 @@ from app.infrastructure.db.database import engine, Base
 from app.infrastructure.db import models
 from app.infrastructure.api.product_routes import router as product_router
 from app.infrastructure.api.client_routes import router as client_routes
+from app.infrastructure.api.order_routes import router as order_router
 
 # Creamos las tablas en la base de datos
 Base.metadata.create_all(bind=engine)
@@ -28,6 +29,7 @@ app.add_middleware(
 
 app.include_router(product_router)
 app.include_router(client_routes)
+app.include_router(order_router)
 
 @app.get("/")
 def read_root():
