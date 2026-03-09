@@ -18,3 +18,8 @@ class OrderRepository(ABC):
     def get_by_id(self, order_id: UUID, tenant_id: UUID):
         """Trae una orden por su ID y tenant_id."""
         pass
+    
+    @abstractmethod
+    def delete(self, order_id: UUID, tenant_id: UUID):
+        """Elimina una orden por su ID y tenant_id."""
+        pass
