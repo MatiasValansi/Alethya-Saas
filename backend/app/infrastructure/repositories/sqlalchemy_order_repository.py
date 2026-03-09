@@ -58,3 +58,9 @@ class SqlAlchemyOrderRepository:
             OrderModel.id == order_id,
             OrderModel.tenant_id == tenant_id
         ).first()
+        
+    def delete(self, order_id: UUID, tenant_id: UUID):
+        order = self.get_by_id(order_id, tenant_id)
+        if order:
+            self.db.delete(order)
+            self.db.commit()
