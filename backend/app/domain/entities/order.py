@@ -24,3 +24,11 @@ class Order:
     def total(self) -> float:
         """Calcula el total sumando los subtotales de cada prenda."""
         return sum(item.subtotal for item in self.items)
+    
+    def validate(self):
+        """Asegura que la orden sea válida antes de procesarla."""
+        if not self.items:
+            raise ValueError("La orden debe tener al menos un producto")
+        if not self.tenant_id:
+            raise ValueError("El tenant_id es obligatorio")
+        return True
