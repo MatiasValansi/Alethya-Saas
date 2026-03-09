@@ -22,8 +22,7 @@ class CreateOrderUseCase:
 
         # Descontar Stock del Inventario
         for item in items:
-            self.product_repo.update(
-                product_id=item["product_id"], 
+            self.product_repo.update(id=item["product_id"], 
                 tenant_id=order_data["tenant_id"], 
                 quantity=-item["quantity"] # Valor negativo para restar
             )
