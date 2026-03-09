@@ -15,7 +15,7 @@ class OrderRepository(ABC):
         pass
 
     @abstractmethod
-    def get_by_id(self, order_id: UUID, tenant_id: UUID):
+    def get_by_id(self, order_id: UUID, tenant_id: UUID) -> Order:
         """Trae una orden por su ID y tenant_id."""
         pass
     
