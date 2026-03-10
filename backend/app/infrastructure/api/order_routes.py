@@ -10,6 +10,7 @@ from app.use_cases.order.create_order import CreateOrderUseCase
 from app.use_cases.order.get_all_orders import GetAllOrdersUseCase
 from app.use_cases.order.get_by_id_order import GetOrderByIdUseCase
 from app.use_cases.order.delete_order import DeleteOrderUseCase
+from app.use_cases.order.update_order import UpdateOrderUseCase
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
@@ -54,3 +55,11 @@ def delete_order(order_id: UUID, tenant_id: UUID, db: Session = Depends(get_db))
         return {"message": "Venta eliminada con éxito y stock restaurado en el inventario"}
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+    
+@router.put("/{order_id}", response_model=OrderResponse)
+def update_order(order_id: UUID, order_in: OrderCreate, db: Session = Depends(get_db)):
+    use_case = UpdateOrderUseCase(SqlAlchemyOrderRepository(db), SqlAlchemyProductRepository(db))
+    try:
+        return use_case.execute(order_id, order_in.tenant_id, order_in.dict())
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
