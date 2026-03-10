@@ -34,13 +34,13 @@ class SqlAlchemyOrderRepository:
             )
             order_items_models.append(item_model)
 
-        # Creamos el modelo de la Orden (Cabecera)
+        # Creamos el modelo de la Orden
         new_order = OrderModel(
             tenant_id=order_data["tenant_id"],
             client_id=order_data.get("client_id"),
             total=total_order,
             status="completed",
-            items=order_items_models # Gracias al 'relationship', SQLAlchemy guarda todo junto
+            items=order_items_models
         )
 
         self.db.add(new_order)
@@ -64,3 +64,29 @@ class SqlAlchemyOrderRepository:
         if order:
             self.db.delete(order)
             self.db.commit()
+            
+    def update(self, order_id: UUID, tenant_id: UUID, order_data: dict, items_data: List[dict]):
+        order = self.get_by_id(order_id, tenant_id)
+        
+        # Limpiamos los items viejos
+        self.db.query(OrderItemModel).filter(OrderItemModel.order_id == order_id).delete()
+        
+        # Calculamos nuevo total y preparamos items
+        new_total = 0.0
+        new_items = []
+        for item in items_data:
+            prod = self.db.query(ProductModel).filter(ProductModel.id == item["product_id"]).first()
+            new_total += prod.price * item["quantity"]
+            new_items.append(OrderItemModel(
+                product_id=prod.id, 
+                quantity=item["quantity"], 
+                price_at_sale=prod.price
+            ))
+
+        order.total = new_total
+        order.client_id = order_data.get("client_id")
+        order.items = new_items
+        
+        self.db.commit()
+        self.db.refresh(order)
+        return order
