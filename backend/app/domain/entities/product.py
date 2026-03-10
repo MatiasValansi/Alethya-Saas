@@ -27,6 +27,12 @@ class Product:
         
         self.stock -= quantity
 
+    def increase_stock(self, quantity: int):
+        """Repone stock al inventario (ej: al cancelar o editar una orden)."""
+        if quantity <= 0:
+            raise ValueError("La cantidad a reponer debe ser positiva")
+        self.stock += quantity
+
     def update_price(self, new_price: float):
         """Valida que el precio nunca sea negativo."""
         if new_price < 0:
