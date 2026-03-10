@@ -1,9 +1,11 @@
 from app.infrastructure.repositories.sqlalchemy_order_repository import SqlAlchemyOrderRepository
 from app.infrastructure.repositories.sqlalchemy_product_repository import SqlAlchemyProductRepository
 from uuid import UUID
+from app.domain.repositories.product_repository import ProductRepository
+from app.domain.repositories.order_repository import OrderRepository
 
 class CreateOrderUseCase:
-    def __init__(self, order_repo: SqlAlchemyOrderRepository, product_repo: SqlAlchemyProductRepository):
+    def __init__(self, order_repo: OrderRepository, product_repo: ProductRepository):
         self.order_repo = order_repo
         self.product_repo = product_repo
 

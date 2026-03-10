@@ -1,9 +1,10 @@
 from app.domain.repositories.order_repository import OrderRepository
 from app.infrastructure.repositories.sqlalchemy_product_repository import SqlAlchemyProductRepository
 from uuid import UUID
+from app.domain.repositories.product_repository import ProductRepository
 
 class DeleteOrderUseCase:
-    def __init__(self, order_repo: OrderRepository, product_repo: SqlAlchemyProductRepository):
+    def __init__(self, order_repo: OrderRepository, product_repo: ProductRepository):
         self.order_repo = order_repo
         self.product_repo = product_repo
 
