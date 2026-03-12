@@ -15,9 +15,7 @@ function App() {
   // Hook de Productos 
   const { products, addProduct, updateProduct, deleteProduct, error: productError } = useProducts();
   
-  // Hook de Clientes
-  const { clients, isLoading: loadingClients, error: clientError, addClient, updateClient, deleteClient } = useClients();
-
+  
   // Estado para navegar entre secciones
   const [activeTab, setActiveTab] = useState<'products' | 'clients'>('products');
 
@@ -25,9 +23,7 @@ function App() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
 
-  const [editingClientId, setEditingClientId] = useState<string | null>(null);
-  const [currentClient, setCurrentClient] = useState<Client | null>(null);
-
+  
   // Lógica de Productos
   const handleProductSubmit = async (data: Product) => {
     if (editingId) await updateProduct(editingId, data);
@@ -45,35 +41,6 @@ function App() {
     setCurrentProduct(null);
   };
 
-  // Lógica de Clientes
-  const handleClientSubmit = async (data: Client) => {
-    if (editingClientId) {
-      await updateClient(editingClientId, data);
-    } else {
-      await addClient(data);
-    }
-    cancelClientEdit();
-  };
-
-  const startEditingClient = (c: Client) => {
-    setEditingClientId(c.id || null);
-    setCurrentClient(c);
-  };
-
-  const cancelClientEdit = () => {
-    setEditingClientId(null);
-    setCurrentClient(null);
-  };
-
-  const handleDeleteClient = async (id: string) => {
-    if (window.confirm("¿Estás seguro de eliminar este cliente?")) {
-      try {
-        await deleteClient(id);
-      } catch (err: any) {
-        alert(err.message);
-      }
-    }
-  };
   return (
     <div className="min-h-screen w-full bg-gray-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
@@ -117,26 +84,7 @@ function App() {
           </div>
         )}
 
-        {/* SECCIÓN CLIENTES */}
-        {activeTab === 'clients' && (
-          <div className="animate-fadeIn grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <ClientForm 
-              initialData={currentClient || { dni: '', name: '', email: '', phone: '', address: '', tenant_id: TEMP_TENANT_ID }}
-              isEditing={!!editingClientId}
-              onSubmit={handleClientSubmit}
-              onCancel={cancelClientEdit}
-            />
-            <div className="lg:col-span-2">
-              <ClientTable 
-                clients={clients} 
-                isLoading={loadingClients} 
-                onEdit={startEditingClient} 
-                onDelete={handleDeleteClient} 
-              />
-            </div>
-          </div>
-        )}
-
+       
         <div className="min-h-screen bg-slate-50/30">
         {/* Aquí podrías tener un Navbar global en el futuro */}
         <main className="py-6">
