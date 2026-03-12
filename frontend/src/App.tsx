@@ -7,6 +7,7 @@ import ProductTable from './components/products/ProductTable';
 import ClientForm from './components/clients/ClientForm'; // Importamos la UI de clientes
 import ClientTable from './components/clients/ClientTable';
 import type { Client } from './types/client';
+import { OrderListPage } from './pages/OrderListPage';
 
 const TEMP_TENANT_ID = import.meta.env.VITE_TENANT_ID;
 
@@ -135,6 +136,13 @@ function App() {
             </div>
           </div>
         )}
+
+        <div className="min-h-screen bg-slate-50/30">
+        {/* Aquí podrías tener un Navbar global en el futuro */}
+        <main className="py-6">
+          <OrderListPage />
+        </main>
+      </div>
       </div>
     </div>
   );
