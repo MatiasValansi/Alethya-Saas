@@ -18,6 +18,15 @@ export const useProducts = () => {
     } finally {
       setIsLoading(false);
     }
+    return { 
+    products, 
+    isLoading, 
+    error, 
+    loadProducts,
+    addProduct, 
+    updateProduct, 
+    deleteProduct 
+  };
   };
 
   const addProduct = async (product: Product) => {
