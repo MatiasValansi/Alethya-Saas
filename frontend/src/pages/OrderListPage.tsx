@@ -10,7 +10,6 @@ export const OrderListPage = () => {
 
   const handleSubmit = async (data: any) => {
     await addOrder(data);
-    // Aquí el formulario de pedidos se limpia solo al ser una creación
   };
 
   const handleDelete = async (id: string) => {
@@ -28,7 +27,6 @@ export const OrderListPage = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <div className="lg:col-span-1">
-          {/* El formulario de pedidos es más complejo, pero ocupa el mismo lugar */}
           <OrderForm onSubmit={handleSubmit} />
         </div>
         <div className="lg:col-span-3">
