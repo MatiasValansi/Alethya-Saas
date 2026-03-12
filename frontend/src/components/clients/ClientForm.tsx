@@ -1,6 +1,6 @@
 // frontend/src/components/ClientForm.tsx
 import React, { useState, useEffect } from 'react';
-import type { Client } from '../types/client';
+import type { Client } from '../../types/client';
 
 interface ClientFormProps {
   initialData: Client; // Nueva prop

@@ -2,10 +2,10 @@ import { useState } from 'react';
 import type { Product } from './types/product';
 import { useProducts } from './hooks/useProducts';
 import { useClients } from './hooks/useClients'; // Importamos el cerebro de clientes
-import ProductForm from './components/ProductForm';
-import ProductTable from './components/ProductTable';
-import ClientForm from './components/ClientForm'; // Importamos la UI de clientes
-import ClientTable from './components/ClientTable';
+import ProductForm from './components/products/ProductForm';
+import ProductTable from './components/products/ProductTable';
+import ClientForm from './components/clients/ClientForm'; // Importamos la UI de clientes
+import ClientTable from './components/clients/ClientTable';
 import type { Client } from './types/client';
 
 const TEMP_TENANT_ID = import.meta.env.VITE_TENANT_ID;

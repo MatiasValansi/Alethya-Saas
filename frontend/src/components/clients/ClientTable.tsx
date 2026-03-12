@@ -1,6 +1,6 @@
 // frontend/src/components/ClientTable.tsx
 import React from 'react';
-import type { Client } from '../types/client';
+import type { Client } from '../../types/client';
 
 interface ClientTableProps {
   clients: Client[];
