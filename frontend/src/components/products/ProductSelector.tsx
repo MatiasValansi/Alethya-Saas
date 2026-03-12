@@ -5,22 +5,22 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useProducts } from "@/hooks/useProducts"
 
-interface ProductSelectorProps {
-  onSelect: (productId: string) => void;
-}
 
-export function ProductSelector({ onSelect }: ProductSelectorProps) {
-  const [open, setOpen] = React.useState(false)
-  const { products } = useProducts()
+
+export function ProductSelector({ onSelect, selectedProductId }: { onSelect: (id: string) => void, selectedProductId?: string }) {
+    const [open, setOpen] = React.useState(false)
+    const { products } = useProducts();
+  
+  // Buscamos el objeto completo para sacar el nombre
+  const selectedProduct = products.find(p => p.id === selectedProductId);
+  
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" role="combobox" className="w-full justify-between">
-          <div className="flex items-center gap-2">
-            <Package className="h-4 w-4 opacity-50" />
-            <span>Añadir producto...</span>
-          </div>
+          {/* SI hay producto seleccionado muestra el nombre, SINO muestra el placeholder */}
+          {selectedProduct ? selectedProduct.name : "Seleccionar producto..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
