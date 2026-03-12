@@ -1,62 +1,44 @@
+import { useState } from 'react';
 import { useOrders } from "@/hooks/useOrders";
 import { OrderTable } from "@/components/orders/OrderTable";
-import { Button } from "@/components/ui/button";
-import { Plus, RefreshCcw, Package } from "lucide-react";
+import { OrderForm } from "@/components/orders/OrderForm";
+import { ShoppingCart } from "lucide-react";
 
 export const OrderListPage = () => {
-  const { orders, isLoading, error, loadOrders, deleteOrder } = useOrders();
+  const { orders, isLoading, error, addOrder, deleteOrder } = useOrders();
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const handleViewOrder = (id: string) => {
-    console.log("Navegando al detalle del pedido:", id);
+  const handleSubmit = async (data: any) => {
+    await addOrder(data);
+    // Aquí el formulario de pedidos se limpia solo al ser una creación
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm("¿Estás seguro de cancelar este pedido?")) {
+      await deleteOrder(id);
+    }
   };
 
   return (
-    <div className="container mx-auto py-8 space-y-6">
-      {/* Encabezado de la Página */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <Package className="h-6 w-6 text-blue-600" />
-            <h1 className="text-3xl font-bold tracking-tight">Pedidos</h1>
-          </div>
-          <p className="text-muted-foreground mt-1">
-            Visualiza y gestiona las ventas realizadas en tu tienda.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={loadOrders} disabled={isLoading} title="Refrescar datos">
-            <RefreshCcw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
-          </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700 shadow-md">
-            <Plus className="mr-2 h-4 w-4" /> Nuevo Pedido
-          </Button>
-        </div>
+    <div className="space-y-6">
+      <div className="flex items-center gap-2 mb-4">
+        <ShoppingCart className="h-6 w-6 text-blue-600" />
+        <h2 className="text-2xl font-bold">Gestión de Pedidos</h2>
       </div>
 
-      {/* Manejo de Errores */}
-      {error && (
-        <div className="bg-destructive/10 border-l-4 border-destructive p-4 text-destructive rounded-r-md">
-          <p className="font-medium">Error de conexión</p>
-          <p className="text-sm">{error}</p>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="lg:col-span-1">
+          {/* El formulario de pedidos es más complejo, pero ocupa el mismo lugar */}
+          <OrderForm onSubmit={handleSubmit} />
         </div>
-      )}
-
-      {/* Tabla de Datos */}
-      <div className="min-h-[400px]">
-        {orders.length > 0 ? (
+        <div className="lg:col-span-3">
+          {error && <div className="bg-red-100 text-red-700 p-4 mb-4 rounded">{error}</div>}
           <OrderTable 
             orders={orders} 
-            onView={handleViewOrder} 
-            onDelete={deleteOrder} 
+            onView={(id) => console.log("Ver detalle", id)} 
+            onDelete={handleDelete} 
           />
-        ) : !isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed rounded-xl bg-slate-50/50">
-            <Package className="h-12 w-12 text-slate-300 mb-4" />
-            <h3 className="text-lg font-medium text-slate-900">No hay pedidos</h3>
-            <p className="text-slate-500">Comienza creando tu primer pedido para ver la lista.</p>
-          </div>
-        ) : null}
+        </div>
       </div>
     </div>
   );
