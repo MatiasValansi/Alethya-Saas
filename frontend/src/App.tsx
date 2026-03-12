@@ -1,46 +1,19 @@
 import { useState } from 'react';
 import type { Product } from './types/product';
 import { useProducts } from './hooks/useProducts';
-import { useClients } from './hooks/useClients'; // Importamos el cerebro de clientes
 import ProductForm from './components/products/ProductForm';
 import ProductTable from './components/products/ProductTable';
-import ClientForm from './components/clients/ClientForm'; // Importamos la UI de clientes
-import ClientTable from './components/clients/ClientTable';
-import type { Client } from './types/client';
 import { OrderListPage } from './pages/OrderListPage';
 
 const TEMP_TENANT_ID = import.meta.env.VITE_TENANT_ID;
 
 function App() {
-  // Hook de Productos 
-  const { products, addProduct, updateProduct, deleteProduct, error: productError } = useProducts();
   
   
   // Estado para navegar entre secciones
   const [activeTab, setActiveTab] = useState<'products' | 'clients'>('products');
 
-  // Estados para edición 
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
-
   
-  // Lógica de Productos
-  const handleProductSubmit = async (data: Product) => {
-    if (editingId) await updateProduct(editingId, data);
-    else await addProduct(data);
-    cancelEdit();
-  };
-
-  const startEditing = (p: Product) => {
-    setEditingId(p.id || null);
-    setCurrentProduct(p);
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setCurrentProduct(null);
-  };
-
   return (
     <div className="min-h-screen w-full bg-gray-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
@@ -66,23 +39,7 @@ function App() {
           </button>
         </div>
 
-        {/* Sección de Productos */}
-        {activeTab === 'products' && (
-          <div className="animate-fadeIn">
-            {productError && <div className="bg-red-100 text-red-700 p-4 mb-4 rounded shadow-sm">{productError}</div>}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <ProductForm 
-                initialData={currentProduct || { name: '', description: '', price: 0, stock: 0, code: '', tenant_id: TEMP_TENANT_ID }}
-                isEditing={!!editingId}
-                onSubmit={handleProductSubmit}
-                onCancel={cancelEdit}
-              />
-              <div className="lg:col-span-2">
-                <ProductTable products={products} onEdit={startEditing} onDelete={deleteProduct} />
-              </div>
-            </div>
-          </div>
-        )}
+       
 
        
         <div className="min-h-screen bg-slate-50/30">
