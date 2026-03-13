@@ -18,15 +18,6 @@ export const useProducts = () => {
     } finally {
       setIsLoading(false);
     }
-    return { 
-    products, 
-    isLoading, 
-    error, 
-    loadProducts,
-    addProduct, 
-    updateProduct, 
-    deleteProduct 
-  };
   };
 
   const addProduct = async (product: Product) => {
@@ -53,5 +44,5 @@ export const useProducts = () => {
     loadProducts();
   }, []);
 
-  return { products, isLoading, error, addProduct, updateProduct, deleteProduct };
+  return { products, isLoading, error, loadProducts, addProduct, updateProduct, deleteProduct };
 };

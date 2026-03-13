@@ -1,43 +1,33 @@
 import { useState } from 'react';
 import { useOrders } from "@/hooks/useOrders";
+import { useProducts } from "@/hooks/useProducts"; // <--- Importante
 import { OrderTable } from "@/components/orders/OrderTable";
-import { OrderForm } from "@/components/orders/OrderForm";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { OrderCreateView } from '@/components/orders/OrderCreateView';
 
 export const OrderListPage = () => {
-  const { orders, isLoading, error, addOrder, deleteOrder } = useOrders();
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [view, setView] = useState<'list' | 'create'>('list');
+  const { orders, addOrder, deleteOrder } = useOrders();
+  const { loadProducts } = useProducts(); // <--- Para arreglar el stock
 
-  const handleSubmit = async (data: any) => {
+  const handleCreateOrder = async (data: any) => {
     await addOrder(data);
+    await loadProducts();
+    setView('list'); 
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("¿Estás seguro de cancelar este pedido?")) {
-      await deleteOrder(id);
-    }
-  };
+  if (view === 'create') {
+    return <OrderCreateView onCancel={() => setView('list')} onSubmit={handleCreateOrder} />;
+  }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-2 mb-4">
-        <ShoppingCart className="h-6 w-6 text-blue-600" />
-        <h2 className="text-2xl font-bold">Gestión de Pedidos</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold flex items-center gap-2"><ShoppingCart /> Gestión de Pedidos</h2>
+        <Button onClick={() => setView('create')} className="bg-blue-600"><Plus className="mr-2 h-4 w-4" /> Armar nuevo pedido</Button>
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <div className="lg:col-span-1">
-          <OrderForm onSubmit={handleSubmit} />
-        </div>
-        <div className="lg:col-span-3">
-          {error && <div className="bg-red-100 text-red-700 p-4 mb-4 rounded">{error}</div>}
-          <OrderTable 
-            orders={orders} 
-            onView={(id) => console.log("Ver detalle", id)} 
-            onDelete={handleDelete} 
-          />
-        </div>
-      </div>
+      <OrderTable orders={orders} onView={() => {}} onDelete={deleteOrder} />
     </div>
   );
 };
