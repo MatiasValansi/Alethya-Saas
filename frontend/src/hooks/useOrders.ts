@@ -25,6 +25,7 @@ export const useOrders = () => {
       await orderService.createOrder(orderData);
       await loadOrders();
     } catch (err: any) {
+      console.error(err.response?.data?.detail);
       throw new Error(err.response?.data?.detail || "Error al crear el pedido");
     }
   };
