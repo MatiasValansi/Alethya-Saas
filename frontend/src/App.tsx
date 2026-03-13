@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { ClientPage } from './pages/ClientPage';
-import { ProductPage } from './pages/ProductPage';
-import { OrderListPage } from './pages/OrderListPage';
+import { ClientPage } from '@/pages/ClientPage';
+import { ProductPage } from '@/pages/ProductPage';
+import { OrderListPage } from '@/pages/OrderListPage';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'products' | 'clients' | 'orders'>('orders');
