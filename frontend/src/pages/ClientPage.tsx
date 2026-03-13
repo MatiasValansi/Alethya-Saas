@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useClients } from '@/hooks/useClients';
 import ClientForm from '@/components/clients/ClientForm';
-import ClientTable from '@/components/clients/ClientTable';
+import { ClientTable } from '@/components/clients/ClientTable';
 import type { Client } from '@/types/client';
 import { Users } from 'lucide-react';
 
